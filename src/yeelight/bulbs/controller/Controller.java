@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +34,23 @@ public class Controller {
             clientSocket.close();
         } catch (IOException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void startProgram (List<String> myargs) {
+        switch (myargs.get(0)) {
+            case "t":
+                int i = 0;
+                while (!myargs.isEmpty()) {
+                    this.toggleBulb(myargs.get(i));
+                    myargs.remove(i);
+                    i++;
+                }
+                break;
+            default:
+                 YeeLightBulbsController.printUsage();
+                 break;
+                
         }
     }
     

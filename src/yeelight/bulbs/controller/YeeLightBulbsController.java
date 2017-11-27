@@ -14,18 +14,25 @@ import java.util.List;
  */
 public class YeeLightBulbsController {
 
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Controller c = new Controller();
         List<String> myargs = Arrays.asList(args);
-        int i=0;
         
-        while(!myargs.isEmpty()) {
-            c.toggleBulb(myargs.get(i));
-            myargs.remove(i);
-        }
+        if (myargs.size()<2)
+            YeeLightBulbsController.printUsage();
+        else
+            c.startProgram(myargs);
+
+       
+    }
+
+    public static void printUsage() {
+        System.out.println("usage comes here...");
     }
 
 }
