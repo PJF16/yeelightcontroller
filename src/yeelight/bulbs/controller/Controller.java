@@ -8,7 +8,9 @@ package yeelight.bulbs.controller;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,20 +25,16 @@ public class Controller {
     private final int BULB_PORT = 55443;
     Socket clientSocket;
     private static int id = 1;
+    private DataOutputStream outdata;
 
     public void toggleBulb(ArrayList<String> myargs) {
 
         for (int i = 0; i < myargs.size(); i++) {
-            try {
-                this.clientSocket = new Socket(myargs.get(i), BULB_PORT);
-                DataOutputStream outdata = new DataOutputStream(clientSocket.getOutputStream());
-                String command = "{\"id\":" + id + ",\"method\":\"toggle\",\"params\":[]}\r\n";
-                outdata.writeBytes(command);
-                id++;
-                clientSocket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
+            this.createConnection(myargs.get(i));
+            String command = "{\"id\":" + id + ",\"method\":\"toggle\",\"params\":[]}\r\n";
+            this.writeToBulb(command);
+
         }
     }
 
@@ -47,21 +45,43 @@ public class Controller {
             myargs.remove(0);
             String duration = "500";
 
-            //now we should check if next object is an IP or a parameter; comes in the future
             for (int i = 0; i < myargs.size(); i++) {
-                try {
-                    this.clientSocket = new Socket(myargs.get(i), BULB_PORT);
-                    DataOutputStream outdata = new DataOutputStream(clientSocket.getOutputStream());
-                    String command = "{\"id\":" + id + ",\"method\":\"set_power\",\"params\":[\""+state+"\",\"smooth\","+duration+"]}\r\n";
-                    outdata.writeBytes(command);
-                    id++;
-                    clientSocket.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                this.createConnection(myargs.get(i));
+                String command = "{\"id\":" + id + ",\"method\":\"set_power\",\"params\":[\"" + state + "\",\"smooth\"," + duration + "]}\r\n";
+                this.writeToBulb(command);
             }
         } else {
             YeeLightBulbsController.printUsage();
+        }
+    }
+
+    private void createConnection(String ip) {
+        try {
+            this.clientSocket = new Socket(ip, BULB_PORT);
+            this.outdata = new DataOutputStream(clientSocket.getOutputStream());
+        } catch (IOException ex) {
+
+            if (ex instanceof ConnectException) {
+                System.out.println("error - connection timed out");
+                System.out.println("is the bulb connected to the wifi? did you specify the right ip?");
+            } else 
+                if (ex instanceof UnknownHostException)
+                    System.out.println("error - unknown host - please check your specified ip");
+            else
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            
+            System.exit(0);
+        }
+
+    }
+
+    private void writeToBulb(String command) {
+        try {
+            this.outdata.writeBytes(command);
+            id++;
+            clientSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
