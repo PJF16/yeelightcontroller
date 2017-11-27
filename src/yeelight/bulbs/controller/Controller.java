@@ -76,6 +76,7 @@ public class Controller {
     private void executeOperation(String operation, ArrayList<String> myargs) {
 
         switch (operation) {
+            case "toggle":
             case "t":
                 this.toggleBulb(myargs);
                 break;

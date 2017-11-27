@@ -35,7 +35,10 @@ public class YeeLightBulbsController {
     }
 
     public static void printUsage() {
-        System.out.println("usage comes here...");
+        System.out.println("Usage: java -jar [options] [ip_bulb1] [ip_bulb2]...");
+        System.out.println("Available options:");
+        System.out.println("t - toggle");
+        System.out.println("p - power	off/on e.g. java -jar p on [ip_bulb16]");
     }
 
 }
