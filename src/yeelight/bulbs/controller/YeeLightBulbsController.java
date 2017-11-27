@@ -26,7 +26,7 @@ public class YeeLightBulbsController {
         if (myargs.size()<2)
             YeeLightBulbsController.printUsage();
         else
-            c.startProgram(myargs);
+            c.startController(myargs);
 
        
     }

@@ -37,7 +37,7 @@ public class Controller {
         }
     }
     
-    public void startProgram (List<String> myargs) {
+    public void startController (List<String> myargs) {
         switch (myargs.get(0)) {
             case "t":
                 int i = 0;
