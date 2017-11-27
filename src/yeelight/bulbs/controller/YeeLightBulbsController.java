@@ -5,6 +5,7 @@
  */
 package yeelight.bulbs.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +22,9 @@ public class YeeLightBulbsController {
      */
     public static void main(String[] args) {
         Controller c = new Controller();
-        List<String> myargs = Arrays.asList(args);
+        ArrayList<String> myargs = new ArrayList<String> ();
+        
+        myargs.addAll(Arrays.asList(args));
         
         if (myargs.size()<2)
             YeeLightBulbsController.printUsage();
